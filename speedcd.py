@@ -21,7 +21,6 @@ def getInfo(creds, torrent):
 	# Get Size
 	size = str(infoBar[0]).split('Size"/> ',1)[1][:-7]
 	# Get seeders
-	print(infoBar[1])
 	seeders = str(infoBar[1]).split('<b>',1)[1][:-15]
 	# Get leechers
 	leechers = str(infoBar[2]).split('<b>',1)[1][:-15]
@@ -51,7 +50,8 @@ def getTorrent(creds, torrent):
 	html = ''
 	with requests.Session() as session:
 		post = session.post(loginURL,data=creds)
-		r = session.get('https://speed.cd/t/' + str(torrent))
+		# Must include key from  rss feed to be able to download
+		r = session.get('https://speed.cd/download.php?torrent=' + str(torrent) + '&key=' + creds['key'])
 		with open(name + '.torrent','wb') as code:
 			code.write(r.content)
 
