@@ -1,5 +1,4 @@
-import requests
-import time
+import requests, time, string, random
 from bs4 import BeautifulSoup
 
 # Collects general information on a torrent, given the torrent id
@@ -42,9 +41,13 @@ def getInfo(creds, torrent):
 	return data
 
 # Downloads the torrent file for a torrent, given the torrent id
-def getTorrent(creds, torrent):
+def getTorrent(creds, torrent, destination):
 	# Get Torrent Name
-	name = getInfo(creds, torrent)['name']
+	try:
+		name = getInfo(creds, torrent)['name']
+	except Exception:
+		print('Error: Problems getting torrent info, saving as random string')
+		name = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
 	# Log in
 	loginURL = 'https://speed.cd/take.login.php'
 	html = ''
@@ -52,7 +55,7 @@ def getTorrent(creds, torrent):
 		post = session.post(loginURL,data=creds)
 		# Must include key from  rss feed to be able to download
 		r = session.get('https://speed.cd/download.php?torrent=' + str(torrent) + '&key=' + creds['key'])
-		with open(name + '.torrent','wb') as code:
+		with open(destination + '/' + name + '.torrent','wb') as code:
 			code.write(r.content)
 
 # Gets a list of the current freeleech torrents
