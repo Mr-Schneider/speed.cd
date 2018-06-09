@@ -46,8 +46,8 @@ def getTorrent(creds, torrent, destination):
 	try:
 		name = getInfo(creds, torrent)['name']
 	except Exception:
-		print('Error: Problems getting torrent info, saving as random string')
-		name = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
+		print('Error: Problems getting torrent info, saving as torrent id')
+		name = str(torrent)
 	# Log in
 	loginURL = 'https://speed.cd/take.login.php'
 	html = ''
